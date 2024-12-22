@@ -5,17 +5,25 @@ resource "aws_instance" "my_instance" {
   ami           = "ami-0e2c8caa4b6378d8c" # Use the appropriate AMI ID
   instance_type = "t2.micro"
   key_name      = "terraform-demo"
+  tags = {
+    Name = "EC2-InstancebyHCLCode"
+  }
 }
 
 resource "aws_autoscaling_group" "asg" {
-  desired_capacity     = 2
-  max_size             = 3
-  min_size             = 1
-  vpc_zone_identifier  = ["subnet-0004c2fde1da3c5fe"] # Replace with your subnet ID
-  launch_configuration = aws_launch_configuration.lc.id
+  desired_capacity    = 2
+  max_size            = 3
+  min_size            = 1
+  vpc_zone_identifier = ["subnet-0004c2fde1da3c5fe"] # Replace with your subnet ID
+  #launch_configuration = aws_launch_configuration.lc.id
+  launch_template {
+    id      = aws_launch_template.lt.id
+    version = "$Latest"
+  }
+
 }
 
-resource "aws_launch_configuration" "lc" {
+resource "aws_launch_template" "lt" {
   image_id      = "ami-0e2c8caa4b6378d8c"
   instance_type = "t2.micro"
   key_name      = "terraform-demo"
