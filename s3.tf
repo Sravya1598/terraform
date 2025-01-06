@@ -1,6 +1,10 @@
 resource "aws_s3_bucket" "unique_bucket" {
   bucket_prefix = "my-unique-bucket-"
-  acl           = "private"
+}
+
+resource "aws_s3_bucket_acl" "unique_bucket_acl" {
+  bucket = aws_s3_bucket.unique_bucket.id
+  acl    = "private"
 }
 
 resource "aws_s3_bucket_notification" "s3_lambda_trigger" {
